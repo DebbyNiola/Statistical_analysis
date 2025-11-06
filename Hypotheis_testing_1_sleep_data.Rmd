@@ -1,0 +1,88 @@
+---
+title: "R Notebook"
+output: 
+html_notebook
+pdf_document: default
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+data("sleep")
+head(sleep)
+```
+
+
+
+
+```{r}
+levels(sleep$group)
+```
+```{r}
+#boxplot for visuals of the data
+boxplot(
+          formula=extra~group,
+          data=sleep,
+          horizontal=TRUE,
+          col= c("red","blue"),
+          xlab = ("Change in sleep(hours)"),
+          ylab = "Group"
+          )
+
+```
+
+
+From the boxplot, there are no outliers in each group. The distribution of sleep pattern for group 2 is more right-skewed than those for group 1. Group 1 recorded more negative values than group 2. We will go ahead with our tests to establish statistical significance.
+
+
+
+
+
+```{r}
+#test for normality
+shapiro.test(
+              sleep$extra
+)
+```
+
+Since  the p-value is greater than alpha, we fail to reject the null hypothesis
+
+CONCLUSION
+The population from which the data is drawn is normally distributed.
+
+
+
+
+
+
+```{r}
+#test for equality of variance
+var.test(sleep$extra[sleep$group == 1],
+         sleep$extra[sleep$group == 2],
+         alternative = "two.sided",
+         conf.level = 0.95)
+```
+
+
+Since the p-value is greater than the significancelevel alpha, we fail to reject the null hypothesis of the variance test.
+
+CONCLUSION
+The variance of the population of both groups are equal.
+
+
+```{r}
+#hypothesis test
+t.test(formula=extra~group,
+       data=sleep,
+       var.equal=TRUE)
+```
+
+Since the p-value of the t-test is greater than the significance level alpha, we fail to reject the null hypothesis.
+
+CONCLUSION
+The sample mean for group 2 is greater than the smaple mean of group 1. With 95% confidence, we say there is no statistically significant different in the average improvement of sleep patterns for both groups.
+
+
+
